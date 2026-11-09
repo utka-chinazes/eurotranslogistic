@@ -1,0 +1,17 @@
+{
+  "name": "eurotrans-logistics",
+  "version": "4.0.0",
+  "private": true,
+  "description": "Browser logistics strategy game set on a map of Europe",
+  "scripts": {
+    "test": "node --test \"tests/unit/*.test.js\"",
+    "test:e2e": "node tests/e2e/smoke.js",
+    "screenshots": "node -e \"process.env.SCREENSHOTS='docs/screenshots';require('./tests/e2e/smoke.js')\""
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "devDependencies": {
+    "puppeteer-core": "^22.15.0"
+  }
+}

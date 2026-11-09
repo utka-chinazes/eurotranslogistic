@@ -1,0 +1,106 @@
+/* ==========================================================================
+   EuroTrans Logistics — дизайн-токени «Нічний диспетчер»
+   Одна темна тема. --brand задається фірмовим кольором компанії гравця.
+   ========================================================================== */
+:root {
+  color-scheme: dark;
+
+  /* Поверхні */
+  --bg: #0a0b1a;
+  --bg-elev: #0f1128;
+  --surface: #151836;
+  --surface-2: #1b1f42;
+  --surface-3: #252a55;
+  --line: #262b55;
+  --line-soft: rgba(255, 255, 255, 0.06);
+
+  /* Текст */
+  --text: #f1f0ff;
+  --text-2: #b4b7dd;
+  --text-3: #767ab0;
+
+  /* Акценти */
+  --brand: #ffa53d;
+  --accent: #ffa53d;
+  --accent-2: #ff5c7a;
+  --good: #3ee6a0;
+  --warn: #ffd23f;
+  --bad: #ff5c7a;
+  --info: #36c9f5;
+  --violet: #c084fc;
+
+  /* Мережі на мапі */
+  --road: #36c9f5;
+  --rail: #ffd23f;
+  --air: #c084fc;
+
+  --grad-sunset: linear-gradient(135deg, #ffa53d 0%, #ff5c7a 100%);
+  --on-accent: #1a0b10;
+
+  /* Типографіка */
+  --font: 'Inter', system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --font-display: 'Space Grotesk', 'Inter', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, Consolas, monospace;
+  --fs-xs: 0.68rem;
+  --fs-sm: 0.76rem;
+  --fs-md: 0.86rem;
+  --fs-lg: 1rem;
+  --fs-xl: 1.3rem;
+
+  /* Відступи, радіуси, тіні */
+  --sp-1: 4px;
+  --sp-2: 8px;
+  --sp-3: 12px;
+  --sp-4: 16px;
+  --sp-5: 24px;
+  --r-sm: 6px;
+  --r-md: 10px;
+  --r-lg: 14px;
+  --r-xl: 20px;
+  --shadow-1: 0 1px 2px rgba(0, 0, 0, 0.35);
+  --shadow-2: 0 8px 24px rgba(0, 0, 0, 0.45);
+  --shadow-3: 0 24px 60px rgba(0, 0, 0, 0.6);
+  --ring: 0 0 0 3px rgba(255, 165, 61, 0.28);
+
+  --ease: cubic-bezier(0.16, 1, 0.3, 1);
+
+  /* Розміри каркасу */
+  --topbar-h: 62px;
+  --rail-w: 78px;
+  --panel-w: 392px;
+  --ticker-h: 30px;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body { height: 100%; }
+
+body {
+  font: 400 var(--fs-md)/1.45 var(--font);
+  background: var(--bg);
+  color: var(--text);
+  overflow: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+button, input, select { font: inherit; color: inherit; }
+button { cursor: pointer; }
+:focus-visible { outline: none; box-shadow: var(--ring); }
+
+.hidden { display: none !important; }
+.mono { font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
+.muted { color: var(--text-3); }
+.accent { color: var(--accent); }
+.pos { color: var(--good) !important; }
+.neg { color: var(--bad) !important; }
+.grow { flex: 1; }
+.spacer { flex: 1; }
+
+::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--surface-3); border-radius: 8px; border: 2px solid var(--bg-elev); }
+::-webkit-scrollbar-thumb:hover { background: #343a72; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; }
+}

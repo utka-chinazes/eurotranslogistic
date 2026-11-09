@@ -3,426 +3,524 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>EuroTrans: Логістика Європи — Міні-гра</title>
-  <link rel="stylesheet" href="style.css">
+  <meta name="theme-color" content="#0a0b1a">
+  <title>EuroTrans Logistics</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/tokens.css">
+  <link rel="stylesheet" href="css/layout.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/screens.css">
 </head>
-<body>
-  <div id="app" class="app-container">
-    <!-- Верхня панель (Статус і показники компанії) -->
-    <header class="top-bar">
+<body class="title-active">
+  <div id="app" class="app">
+    <!-- ============================ Верхня панель ============================ -->
+    <header class="topbar">
       <div class="brand">
-        <div class="brand-icon">🌐</div>
-        <div class="brand-info">
-          <h1>EuroTrans <span>Logistics</span></h1>
-          <p class="company-tier" id="companyTier">Стартап-перевізник</p>
+        <div class="brand-mark" id="brandMark">ET</div>
+        <div class="brand-text">
+          <div class="brand-name" id="brandCompanyName">EuroTrans Logistics</div>
+          <div class="brand-tier" id="companyTier"></div>
         </div>
       </div>
 
-      <div class="stats-group">
-        <div class="stat-card" title="Поточний баланс компанії">
-          <span class="stat-label">Баланс</span>
-          <span class="stat-value highlight-green" id="statMoney">€15,000</span>
+      <div class="hud" id="hud">
+        <div class="hud-item hud-money">
+          <span class="hud-label" data-i18n="stat_capital">Капітал</span>
+          <span class="hud-value mono" id="hudMoney">€0</span>
+          <span class="hud-sub mono" id="hudToday"></span>
         </div>
-        <div class="stat-card" title="Репутація компанії серед замовників">
-          <span class="stat-label">Репутація</span>
-          <span class="stat-value" id="statReputation">⭐ 100%</span>
+        <div class="hud-item">
+          <span class="hud-label" data-i18n="stat_reputation">Репутація</span>
+          <span class="hud-value mono" id="hudRep">80%</span>
+          <span class="meter"><span class="meter-fill" id="hudRepBar"></span></span>
         </div>
-        <div class="stat-card" title="Автопарк / Місткість ваших гаражів">
-          <span class="stat-label">Гаражі / Флот</span>
-          <span class="stat-value" id="statFleetCount">1 / 2 ТЗ</span>
+        <div class="hud-item">
+          <span class="hud-label" data-i18n="hud_fleet">Флот</span>
+          <span class="hud-value mono" id="hudFleet">1/2</span>
+          <span class="hud-sub" id="hudFleetSub"></span>
         </div>
-        <div class="stat-card" title="Найняті водії та екіпажі">
-          <span class="stat-label">Водії</span>
-          <span class="stat-value highlight-cyan" id="statDriversCount">1 водій</span>
+        <div class="hud-item">
+          <span class="hud-label" data-i18n="stat_deliveries">Доставки</span>
+          <span class="hud-value mono" id="hudDeliveries">0</span>
+          <span class="hud-sub" id="hudStreak"></span>
         </div>
-        <div class="stat-card" title="Успішно виконані замовлення">
-          <span class="stat-label">Доставлено</span>
-          <span class="stat-value" id="statDeliveries">0</span>
-        </div>
-        <div class="stat-card" title="Внутрішньоігровий календар">
-          <span class="stat-label">Ігровий час</span>
-          <span class="stat-value time-mono" id="statTime">День 1, 08:00</span>
+        <div class="hud-item hud-wide">
+          <span class="hud-label" data-i18n="hud_company_value">Вартість компанії</span>
+          <span class="hud-value mono" id="hudValue">€0</span>
+          <span class="hud-sub" id="hudLoan"></span>
         </div>
       </div>
 
-      <div class="controls-group">
-        <div class="speed-controls">
-          <button id="btnPause" class="btn-icon" title="Пауза">⏸️</button>
-          <button id="btnSpeed1" class="btn-icon active" title="Швидкість 1x">1x</button>
-          <button id="btnSpeed2" class="btn-icon" title="Швидкість 2x">2x</button>
-          <button id="btnSpeed4" class="btn-icon" title="Швидкість 4x">4x</button>
+      <div class="topbar-right">
+        <div class="clock">
+          <span class="clock-day" id="hudDay">День 1</span>
+          <span class="clock-time mono" id="hudTime">08:00</span>
         </div>
-        <button id="btnSound" class="btn-icon" title="Увімкнути / Вимкнути звук">🔊</button>
-        <button id="btnLang" class="btn-icon btn-lang-top" title="Змінити мову / Jazyk / Language / Sprache">🌐 <span id="currentLangBadge" class="lang-code">UA</span></button>
-        <button id="btnHelp" class="btn-icon" title="Довідка та правила гри">❓</button>
-        <button id="btnReset" class="btn-icon btn-danger-icon" title="Почати нову гру">🔄</button>
+        <div class="speed-seg" role="group" aria-label="Speed">
+          <button id="btnPause" data-speed="0" data-i18n-title="btn_pause_title" title="Пауза">❚❚</button>
+          <button data-speed="1" title="1×">1×</button>
+          <button data-speed="2" title="2×">2×</button>
+          <button data-speed="4" title="4×">4×</button>
+        </div>
+        <span id="saveStatus" class="save-status"></span>
+        <button id="btnProfile" class="avatar-btn" data-i18n-title="btn_profile_title" title="Профіль"><span id="btnProfileAvatar">🧑‍💼</span></button>
+        <button id="btnMenu" class="icon-btn" data-i18n-title="btn_menu_title" title="Меню (Esc)">☰</button>
       </div>
     </header>
 
-    <!-- Головна робоча область -->
-    <main class="main-content">
-      <!-- Ліва панель керування: Контракти, Автопарк, Магазин, Апгрейди -->
-      <aside class="sidebar">
-        <nav class="sidebar-tabs">
-          <button class="tab-btn active" data-tab="contracts" title="Доступні контракти на перевезення">
-            📋 Замовлення <span class="badge" id="badgeContracts">0</span>
-          </button>
-          <button class="tab-btn" data-tab="fleet" title="Ваш активний автопарк">
-            🚛 Автопарк <span class="badge" id="badgeFleet">1</span>
-          </button>
-          <button class="tab-btn" data-tab="shop" title="Купівля тягачів, потягів та авіації">
-            🛒 Автосалон
-          </button>
-          <button class="tab-btn" data-tab="garages" title="Гаражі та ангари у містах Європи">
-            🏠 Гаражі <span class="badge" id="badgeGarages">1</span>
-          </button>
-          <button class="tab-btn" data-tab="drivers" title="Біржа водіїв та призначення екіпажів">
-            👔 Водії <span class="badge" id="badgeDrivers">1</span>
-          </button>
-          <button class="tab-btn" data-tab="upgrades" title="Технології та компромісні модифікації">
-            ⚙️ Апгрейди
-          </button>
-        </nav>
+    <!-- ============================ Робоча область ============================ -->
+    <div class="workspace">
+      <nav class="rail" aria-label="Sections">
+        <button class="rail-btn" data-tab="contracts"><span class="rail-ico">📋</span><span class="rail-label" data-i18n="nav_contracts">Замовлення</span><span class="rail-badge" id="badgeContracts"></span></button>
+        <button class="rail-btn" data-tab="fleet"><span class="rail-ico">🚚</span><span class="rail-label" data-i18n="nav_fleet">Автопарк</span><span class="rail-badge warn" id="badgeFleet"></span></button>
+        <button class="rail-btn" data-tab="shop"><span class="rail-ico">🛒</span><span class="rail-label" data-i18n="nav_shop">Салон</span></button>
+        <button class="rail-btn" data-tab="garages"><span class="rail-ico">🏠</span><span class="rail-label" data-i18n="nav_garages">Бази</span></button>
+        <button class="rail-btn" data-tab="drivers"><span class="rail-ico">👔</span><span class="rail-label" data-i18n="nav_drivers">Персонал</span><span class="rail-badge warn" id="badgeDrivers"></span></button>
+        <button class="rail-btn" data-tab="upgrades"><span class="rail-ico">⚡</span><span class="rail-label" data-i18n="nav_upgrades">Технології</span></button>
+        <button class="rail-btn" data-tab="finance"><span class="rail-ico">🏦</span><span class="rail-label" data-i18n="nav_finance">Фінанси</span><span class="rail-badge danger" id="badgeFinance"></span></button>
+        <div class="rail-spacer"></div>
+        <button class="rail-btn rail-mini" id="btnHelp" data-i18n-title="btn_help_title" title="Довідка"><span class="rail-ico">❓</span></button>
+      </nav>
 
-        <!-- Вкладка: Контракти -->
-        <section id="tab-contracts" class="tab-content active">
-          <div class="tab-header">
-            <h3>Доступні замовлення</h3>
-            <span class="hint">Оберіть рейс, призначте ТЗ та підготовленого водія</span>
+      <aside class="panel" id="panel">
+        <section id="tab-contracts" class="tab-content">
+          <div class="panel-head">
+            <h2 data-i18n="contracts_title">Доступні рейси</h2>
+            <p data-i18n="contracts_hint_v4">Найкращий транспорт і прибуток видно прямо на картці</p>
           </div>
-          <div class="filters-row">
-            <button class="filter-chip active" data-filter="all">Всі міста</button>
-            <button class="filter-chip" data-filter="express">🔥 Експрес</button>
-            <button class="filter-chip" data-filter="heavy">📦 Важкі</button>
+          <div class="chips">
+            <button class="chip active" data-filter="all" data-i18n="filter_all">Всі</button>
+            <button class="chip" data-filter="doable" data-i18n="filter_doable">Можу виконати</button>
+            <button class="chip" data-filter="express" data-i18n="filter_express">Експрес</button>
+            <button class="chip" data-filter="heavy" data-i18n="filter_heavy">Важкі</button>
           </div>
-          <div class="contracts-list" id="contractsList">
-            <!-- Генерується динамічно -->
-          </div>
+          <div class="list" id="contractsList"></div>
         </section>
 
-        <!-- Вкладка: Автопарк -->
         <section id="tab-fleet" class="tab-content">
-          <div class="tab-header">
-            <h3>Ваш активний автопарк</h3>
-            <span class="hint">Моніторинг рейсів, водіїв та локацій</span>
+          <div class="panel-head">
+            <h2 data-i18n="fleet_title">Автопарк</h2>
+            <p data-i18n="fleet_hint_v4">Стан техніки, сервіс, перегін і продаж</p>
           </div>
-          <div class="fleet-list" id="fleetList">
-            <!-- Генерується динамічно -->
-          </div>
+          <div class="list" id="fleetList"></div>
         </section>
 
-        <!-- Вкладка: Купівля транспорту -->
         <section id="tab-shop" class="tab-content">
-          <div class="tab-header">
-            <h3>Європейський Автосалон</h3>
-            <span class="hint">Фургони, тягачі TIR, вантажні потяги та авіація</span>
+          <div class="panel-head">
+            <h2 data-i18n="shop_title">Автосалон</h2>
+            <p id="shopSlotsHint"></p>
           </div>
-          <div class="shop-list" id="shopList">
-            <!-- Генерується динамічно -->
+          <div class="chips">
+            <button class="chip active" data-shopnet="all" data-i18n="filter_all">Всі</button>
+            <button class="chip" data-shopnet="road" data-i18n="net_road">Шосе</button>
+            <button class="chip" data-shopnet="rail" data-i18n="net_rail">Залізниця</button>
+            <button class="chip" data-shopnet="air" data-i18n="net_air">Авіа</button>
           </div>
+          <div class="list" id="shopList"></div>
         </section>
 
-        <!-- Вкладка: Гаражі та Ангари -->
         <section id="tab-garages" class="tab-content">
-          <div class="tab-header">
-            <h3>Гаражна мережа Європи</h3>
-            <span class="hint">Купуйте та розширюйте бази в містах для зберігання флоту</span>
+          <div class="panel-head">
+            <h2 data-i18n="garages_title">Бази</h2>
+            <p data-i18n="garages_hint">Бази для стоянки флоту та бонуси</p>
           </div>
-          <div class="garages-summary-card" id="garagesSummary">
-            <!-- Підсумкова статистика гаражів -->
-          </div>
-          <div class="garages-list" id="garagesList">
-            <!-- Список гаражів -->
-          </div>
+          <div id="garagesSummary"></div>
+          <div class="list" id="garagesList"></div>
         </section>
 
-        <!-- Вкладка: Водії та Персонал -->
         <section id="tab-drivers" class="tab-content">
-          <div class="tab-header">
-            <h3>Персонал та Біржа водіїв</h3>
-            <span class="hint">Наймайте досвідчених водіїв, машиністів та пілотів</span>
+          <div class="panel-head">
+            <h2 data-i18n="drivers_title">Персонал</h2>
+            <p data-i18n="drivers_hint">Найм, кваліфікація, закріплення</p>
           </div>
-          <div class="drivers-tabs-subnav">
-            <button class="subtab-btn active" id="subtabMyDrivers" data-subtab="my">Штат компанії (<span id="countMyDrivers">1</span>)</button>
-            <button class="subtab-btn" id="subtabRecruitDrivers" data-subtab="market">Біржа праці (<span id="countMarketDrivers">4</span>)</button>
+          <div class="seg">
+            <button class="seg-btn active" data-subtab="my"><span data-i18n="subtab_my_drivers">Мої водії</span> <b id="countMyDrivers">1</b></button>
+            <button class="seg-btn" data-subtab="market"><span data-i18n="subtab_recruit_drivers">Біржа праці</span> <b id="countMarketDrivers">4</b></button>
           </div>
-          <div class="drivers-list" id="driversList">
-            <!-- Список водіїв -->
-          </div>
+          <div class="list" id="driversList"></div>
         </section>
 
-        <!-- Вкладка: Апгрейди компанії та Компромісні модифікації -->
         <section id="tab-upgrades" class="tab-content">
-          <div class="tab-header">
-            <h3>Технологічний розвиток</h3>
-            <span class="hint">Базові інфраструктурні покращення та інженерні компроміси</span>
+          <div class="panel-head">
+            <h2 data-i18n="upgrades_title">Технології</h2>
+            <p data-i18n="upgrades_hint">Компроміси та корпоративні покращення</p>
           </div>
-          
-          <h4 class="upgrades-section-header">⚖️ Інженерні компроміси (Плюси та Мінуси)</h4>
-          <p class="upgrades-section-hint">Дають суттєвий бонус в одній сфері, але мають технологічні або економічні обмеження.</p>
-          <div class="tradeoffs-list" id="tradeoffsList">
-            <!-- Компромісні апгрейди генеруються тут -->
-          </div>
+          <h3 class="section-label" data-i18n="regular_upgrades_header">Корпоративні технології</h3>
+          <div class="list" id="upgradesList"></div>
+          <h3 class="section-label" data-i18n="tradeoffs_header">Компроміси</h3>
+          <p class="section-note" data-i18n="tradeoffs_hint"></p>
+          <div class="list" id="tradeoffsList"></div>
+        </section>
 
-          <h4 class="upgrades-section-header" style="margin-top: 18px;">🏢 Корпоративні технології</h4>
-          <div class="upgrades-list" id="upgradesList">
-            <!-- Базові апгрейди -->
+        <section id="tab-finance" class="tab-content">
+          <div class="panel-head">
+            <h2 data-i18n="finance_title">Фінанси</h2>
+            <p data-i18n="finance_hint">Кредити, щоденні витрати та вартість компанії</p>
           </div>
+          <div id="financeBody"></div>
         </section>
       </aside>
 
-      <!-- Центральна інтерактивна мапа Європи -->
-      <section class="map-section">
-        <div class="map-overlay-header">
-          <div class="active-city-indicator" id="mapCityIndicator">
-            🗺️ <span data-i18n="map_hint_default">Натисніть на місто або маршрут для деталей</span>
-          </div>
-          <div class="map-legend">
-            <span class="legend-item"><span class="dot road"></span> <span data-i18n="map_legend_road">Автотраси</span></span>
-            <span class="legend-item"><span class="dot rail"></span> <span data-i18n="map_legend_rail">Залізниця</span></span>
-            <span class="legend-item"><span class="dot air"></span> <span data-i18n="map_legend_air">Авіалінії</span></span>
+      <main class="map-area">
+        <div class="map-head">
+          <div class="map-indicator" id="mapCityIndicator"></div>
+          <div class="legend">
+            <span><i class="lg-dot road"></i><span data-i18n="map_legend_road">Автобан</span></span>
+            <span><i class="lg-dot rail"></i><span data-i18n="map_legend_rail">Залізниця</span></span>
+            <span><i class="lg-dot air"></i><span data-i18n="map_legend_air">Авіа</span></span>
           </div>
         </div>
-
         <div class="canvas-wrapper" id="canvasWrapper">
           <canvas id="mapCanvas"></canvas>
           <div id="mapTooltip" class="map-tooltip hidden"></div>
-          <!-- Індикатор заморозки мапи (Пауза справа зверху) -->
-          <div id="mapFreezeBanner" class="map-freeze-banner hidden">
-            <span class="freeze-icon">❄️</span>
-            <span id="mapFreezeText" data-i18n="map_frozen_banner">Мапу заморожено (симуляція на паузі)</span>
-            <button id="btnUnfreezeMap" class="btn-unfreeze" data-i18n="btn_unfreeze_map">Розморозити ▶</button>
+          <div id="mapFreezeBanner" class="freeze-banner hidden">
+            <span data-i18n="map_frozen_banner">Пауза</span>
+            <button id="btnUnfreezeMap" class="btn btn-sm btn-primary" data-i18n="btn_unfreeze_map">Продовжити</button>
           </div>
         </div>
-
-        <!-- Нижня смужка активних перевезень -->
-        <div class="active-routes-bar" id="activeRoutesBar">
-          <div class="routes-bar-title"><span data-i18n="active_routes_label">Активні рейси</span> (<span id="activeRoutesCount">0</span>):</div>
-          <div class="routes-scroll-container" id="routesScrollContainer">
-            <div class="empty-routes-hint" data-i18n="empty_routes_hint">Немає транспорту в дорозі. Прийміть замовлення!</div>
-          </div>
+        <div class="routes-bar">
+          <div class="routes-title"><span data-i18n="active_routes_label">Активні рейси</span> <b id="activeRoutesCount">0</b></div>
+          <div class="routes-scroll" id="routesScrollContainer"></div>
         </div>
-      </section>
-    </main>
+      </main>
+    </div>
 
-    <!-- Стрічка подій та сповіщень -->
-    <footer class="bottom-ticker">
-      <div class="ticker-label" data-i18n="ticker_label">📰 Новини Європи:</div>
-      <div class="ticker-content" id="tickerContent" data-i18n="ticker_default">
-        Логістичні коридори Європейського Союзу працюють у штатному режимі. Вітаємо у EuroTrans!
-      </div>
+    <footer class="ticker">
+      <span class="ticker-label">📰 <span data-i18n="ticker_label">Новини</span></span>
+      <span class="ticker-content" id="tickerContent"></span>
     </footer>
   </div>
 
-  <!-- Модальне вікно призначення транспорту на контракт -->
-  <div id="assignModal" class="modal-backdrop hidden">
+  <!-- ============================ Титульний екран ============================ -->
+  <div id="titleScreen" class="title-screen">
+    <div class="title-inner">
+      <div class="title-logo">
+        <div class="title-mark">ET</div>
+        <div>
+          <h1>EuroTrans <span>Logistics</span></h1>
+          <p data-i18n="title_tagline">Збудуйте транспортну імперію на мапі Європи</p>
+        </div>
+      </div>
+
+      <div id="titleContinue" class="continue-card hidden"></div>
+
+      <div class="title-actions">
+        <button class="btn btn-primary btn-lg hidden" id="btnContinue" data-i18n="btn_continue">Продовжити</button>
+        <button class="btn btn-lg" id="btnNewCompany" data-i18n="btn_new_company">Нова компанія</button>
+        <label class="btn btn-ghost btn-lg" for="importFileTitle"><span data-i18n="btn_import_save">Імпорт збереження</span></label>
+        <input type="file" id="importFileTitle" accept=".json,application/json" hidden>
+      </div>
+
+      <div class="title-archive hidden" id="titleArchive"></div>
+
+      <div class="title-foot">
+        <div class="lang-row" id="titleLangs">
+          <button class="lang-chip" data-lang="uk">UA</button>
+          <button class="lang-chip" data-lang="sk">SK</button>
+          <button class="lang-chip" data-lang="en">EN</button>
+          <button class="lang-chip" data-lang="de">DE</button>
+        </div>
+        <span class="title-storage" id="titleStorage"></span>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================ Майстер заснування ============================ -->
+  <div id="setupScreen" class="setup-screen hidden">
+    <form class="wizard" id="setupForm" autocomplete="off" novalidate>
+      <div class="wizard-head">
+        <div class="kicker" data-i18n="setup_kicker">Нова компанія</div>
+        <ol class="stepper" id="setupStepper">
+          <li data-step="0"><span>1</span><em data-i18n="wiz_step_owner">Власник</em></li>
+          <li data-step="1"><span>2</span><em data-i18n="wiz_step_company">Компанія</em></li>
+          <li data-step="2"><span>3</span><em data-i18n="wiz_step_hq">Штаб</em></li>
+          <li data-step="3"><span>4</span><em data-i18n="wiz_step_start">Старт</em></li>
+        </ol>
+      </div>
+
+      <div class="wizard-body">
+        <!-- Крок 1: власник -->
+        <section class="wiz-step" data-step="0">
+          <h2 data-i18n="wiz_owner_title">Хто керує компанією?</h2>
+          <p class="wiz-lead" data-i18n="wiz_owner_lead">Ваше ім'я з'явиться в профілі, а походження дасть постійний бонус.</p>
+          <label class="field">
+            <span data-i18n="setup_owner_label">Ім'я власника</span>
+            <input type="text" id="setupOwnerName" maxlength="32" data-i18n-ph="setup_owner_ph" placeholder="Олена Ковальчук">
+            <small class="field-error" id="ownerError" data-i18n="err_owner_name">Вкажіть ім'я (2–32 символи)</small>
+          </label>
+          <div class="field-label" data-i18n="setup_avatar_label">Аватар</div>
+          <div class="avatar-grid" id="setupAvatars"></div>
+          <div class="field-label" data-i18n="wiz_background_label">Походження</div>
+          <div class="option-grid" id="setupBackgrounds"></div>
+        </section>
+
+        <!-- Крок 2: компанія -->
+        <section class="wiz-step" data-step="1">
+          <h2 data-i18n="wiz_company_title">Як назвемо компанію?</h2>
+          <p class="wiz-lead" data-i18n="wiz_company_lead">Назва і фірмовий колір — на мапі, в шапці й на кожному рейсі.</p>
+          <label class="field">
+            <span data-i18n="setup_company_label">Назва компанії</span>
+            <span class="input-row">
+              <input type="text" id="setupCompanyName" maxlength="32" placeholder="Danube Freight">
+              <button type="button" class="btn btn-ghost" id="btnRandomName" data-i18n-title="wiz_random_name" title="🎲">🎲</button>
+            </span>
+            <small class="field-error" id="companyError" data-i18n="err_company_name">Вкажіть назву (2–32 символи)</small>
+          </label>
+          <div class="field-label" data-i18n="wiz_color_label">Фірмовий колір</div>
+          <div class="color-row" id="setupColors"></div>
+        </section>
+
+        <!-- Крок 3: штаб -->
+        <section class="wiz-step" data-step="2">
+          <h2 data-i18n="wiz_hq_title">Де буде штаб?</h2>
+          <p class="wiz-lead" data-i18n="wiz_hq_lead">Оберіть карткою або клацніть пульсуюче місто на мапі.</p>
+          <div class="base-list" id="setupBases"></div>
+        </section>
+
+        <!-- Крок 4: старт -->
+        <section class="wiz-step" data-step="3">
+          <h2 data-i18n="wiz_start_title">Останній штрих</h2>
+          <p class="wiz-lead" data-i18n="wiz_start_lead">Оберіть складність і перевірте все перед заснуванням.</p>
+          <div class="field-label" data-i18n="wiz_difficulty_label">Складність</div>
+          <div class="option-grid three" id="setupDifficulty"></div>
+          <div class="summary" id="setupSummary"></div>
+        </section>
+      </div>
+
+      <div class="wizard-foot">
+        <button type="button" class="btn btn-ghost" id="btnSetupCancel" data-i18n="setup_cancel">Скасувати</button>
+        <span class="spacer"></span>
+        <button type="button" class="btn" id="btnWizBack" data-i18n="btn_tut_prev">Назад</button>
+        <button type="submit" class="btn btn-primary" id="btnWizNext" data-i18n="btn_wiz_next">Далі</button>
+      </div>
+    </form>
+
+    <!-- Живе прев'ю компанії поверх мапи -->
+    <div class="preview-card" id="setupPreview"></div>
+  </div>
+
+  <!-- ============================ Модалка призначення ============================ -->
+  <div id="assignModal" class="modal hidden" role="dialog" aria-modal="true">
     <div class="modal-card">
-      <div class="modal-header">
-        <h3>Призначити транспорт на контракт</h3>
-        <button class="btn-close" id="btnCloseAssignModal">✕</button>
+      <div class="modal-head">
+        <h3 data-i18n="assign_modal_title">Призначити транспорт</h3>
+        <button class="icon-btn" data-close="assignModal" aria-label="Close">✕</button>
       </div>
       <div class="modal-body">
-        <div class="contract-brief" id="modalContractBrief">
-          <!-- Короткий опис контракту -->
-        </div>
-        <h4>Оберіть доступний транспортний засіб:</h4>
-        <div class="modal-vehicles-list" id="modalVehiclesList">
-          <!-- Доступні авто -->
-        </div>
+        <div class="brief" id="modalContractBrief"></div>
+        <h4 class="section-label" data-i18n="assign_choose_vehicle">Оберіть транспорт</h4>
+        <div class="list" id="modalVehiclesList"></div>
       </div>
     </div>
   </div>
 
-  <!-- Модальне вікно довідки та правил -->
-  <div id="helpModal" class="modal-backdrop hidden">
-    <div class="modal-card help-card">
-      <div class="modal-header">
-        <h3>📖 Як грати у EuroTrans Logistics</h3>
-        <button class="btn-close" id="btnCloseHelpModal">✕</button>
+  <!-- ============================ Довідка ============================ -->
+  <div id="helpModal" class="modal hidden" role="dialog" aria-modal="true">
+    <div class="modal-card wide">
+      <div class="modal-head">
+        <h3 data-i18n="help_modal_title">Довідка</h3>
+        <button class="icon-btn" data-close="helpModal" aria-label="Close">✕</button>
       </div>
-      <div class="modal-body">
-        <div class="help-section">
-          <h4>🎯 Мета гри</h4>
-          <p>Розвинути логістичну компанію від одного фургона до найбільшого перевізника Європи, заробляти кошти, купувати флот і виконувати складні контракти.</p>
-        </div>
+      <div class="modal-body help-body">
+        <p data-i18n="help_text_about"></p>
         <div class="help-grid">
-          <div class="help-col">
-            <h5>🚐 Буси та фургони</h5>
-            <p>Швидкі, недорогі, витрачають мало палива. Ідеальні для легких і термінових вантажів до 3.5 т.</p>
-          </div>
-          <div class="help-col">
-            <h5>🚚 Тягачі (TIR)</h5>
-            <p>Робочі конячки європейських автобанів. Велика місткість (до 22 т), збалансовані витрати.</p>
-          </div>
-          <div class="help-col">
-            <h5>🚂 Вантажні потяги</h5>
-            <p>Рухаються між ключовими залізничними хабами. Перевозять величезні партії (до 60 т) з мінімальними витратами на тонну.</p>
-          </div>
-          <div class="help-col">
-            <h5>✈️ Вантажні літаки</h5>
-            <p>Летять напряму між будь-якими містами на величезній швидкості. Дорогі в обслуговуванні, але незамінні для VIP-експресів!</p>
-          </div>
+          <div><h5 data-i18n="help_sec_vans"></h5><p data-i18n="help_sec_vans_desc"></p></div>
+          <div><h5 data-i18n="help_sec_trucks"></h5><p data-i18n="help_sec_trucks_desc"></p></div>
+          <div><h5 data-i18n="help_sec_trains"></h5><p data-i18n="help_sec_trains_desc"></p></div>
+          <div><h5 data-i18n="help_sec_planes"></h5><p data-i18n="help_sec_planes_desc"></p></div>
         </div>
-        <div class="help-section">
-          <h4>💡 Поради диспетчера</h4>
-          <ul>
-            <li>Звертайте увагу на дедлайн: запізнення карається штрафом та падінням репутації!</li>
-            <li>Якщо автомобіль знаходиться не в місті відправлення, йому знадобиться час, щоб дістатися завантаження.</li>
-            <li>Слідкуйте за випадковими подіями в біжучому рядку — затори на митницях та снігопади можуть затримати ваші вантажі.</li>
-            <li>Купуйте апгрейди складів для отримання бонусів до виплат!</li>
-          </ul>
-        </div>
+        <h4 class="section-label" data-i18n="help_tips_title"></h4>
+        <ul class="tips">
+          <li data-i18n="help_tip_wear"></li>
+          <li data-i18n="help_tip_finance"></li>
+          <li data-i18n="help_tip_1"></li>
+          <li data-i18n="help_tip_2"></li>
+          <li data-i18n="help_tip_3"></li>
+          <li data-i18n="help_tip_4"></li>
+        </ul>
       </div>
-      <div class="modal-footer">
-        <button class="btn-sm" id="btnRestartTutorialFromHelp" style="margin-right: auto;">🎓 Пройти навчання знову</button>
-        <button class="btn-primary" id="btnGotIt">Зрозуміло, до гри!</button>
+      <div class="modal-foot">
+        <button class="btn" id="btnRestartTutorialFromHelp" data-i18n="btn_restart_tut_help">Пройти навчання знову</button>
+        <span class="spacer"></span>
+        <button class="btn btn-primary" data-close="helpModal" data-i18n="btn_got_it">Зрозуміло</button>
       </div>
     </div>
   </div>
 
-  <!-- Модальне вікно меню паузи (Esc) -->
-  <div id="pauseModal" class="modal-backdrop hidden">
+  <!-- ============================ Меню паузи ============================ -->
+  <div id="pauseModal" class="modal hidden" role="dialog" aria-modal="true">
     <div class="modal-card pause-card">
-      <div class="modal-header">
-        <div class="pause-header-title">
-          <span class="pause-icon">⏸️</span>
-          <div>
-            <h3>Меню Паузи</h3>
-            <span class="hint">Гру призупинено</span>
-          </div>
+      <div class="modal-head">
+        <div>
+          <h3 data-i18n="pause_modal_title">Меню паузи</h3>
+          <span class="muted" data-i18n="pause_modal_hint">Гра призупинена</span>
         </div>
-        <button class="btn-close" id="btnClosePauseModal" title="Продовжити гру (Esc)">✕</button>
+        <button class="btn btn-primary" id="btnResumeGame" data-i18n="btn_resume_game">Продовжити гру</button>
       </div>
-
+      <nav class="tabs">
+        <button class="tab" data-ptab="profile">👤 <span data-i18n="ptab_profile">Профіль</span></button>
+        <button class="tab" data-ptab="stats">📊 <span data-i18n="ptab_stats">Статистика</span></button>
+        <button class="tab" data-ptab="achievements">🏆 <span data-i18n="ptab_achievements">Досягнення</span></button>
+        <button class="tab" data-ptab="settings">⚙️ <span data-i18n="ptab_settings">Налаштування</span></button>
+      </nav>
       <div class="modal-body">
-        <!-- Кнопка продовжити -->
-        <button id="btnResumeGame" class="btn-resume">
-          ▶️ Продовжити гру
-        </button>
-
-        <!-- Розділ: Налаштування мови -->
-        <div class="pause-section">
-          <div class="section-title">🌐 <span data-i18n="pause_lang_section">Мова гри (Language / Jazyk / Sprache)</span></div>
-          <div class="lang-selector-grid" id="langSelectorGrid">
-            <button class="lang-btn" data-lang="sk">🇸🇰 Slovenčina</button>
-            <button class="lang-btn active" data-lang="uk">🇺🇦 Українська</button>
-            <button class="lang-btn" data-lang="en">🇬🇧 English</button>
-            <button class="lang-btn" data-lang="de">🇩🇪 Deutsch</button>
+        <section class="pane" id="ppane-profile">
+          <div class="profile-card" id="profileCard"></div>
+          <div class="box">
+            <div class="box-title" data-i18n="profile_edit_section">Редагувати профіль</div>
+            <div class="form-grid">
+              <label class="field"><span data-i18n="setup_owner_label">Ім'я</span><input type="text" id="profileOwnerInput" maxlength="32"></label>
+              <label class="field"><span data-i18n="setup_company_label">Компанія</span><input type="text" id="profileCompanyInput" maxlength="32"></label>
+            </div>
+            <div class="avatar-grid small" id="profileAvatars"></div>
+            <div class="color-row small" id="profileColors"></div>
+            <button class="btn" id="btnSaveProfile" data-i18n="btn_save_profile">Зберегти профіль</button>
           </div>
-        </div>
+          <div class="box" id="archiveBox"></div>
+        </section>
 
-        <!-- Розділ: Налаштування -->
-        <div class="pause-section">
-          <div class="section-title">⚙️ <span data-i18n="pause_audio_section">Налаштування аудіо</span></div>
-
-          <!-- Гучність -->
-          <div class="setting-item">
-            <div class="setting-info">
-              <label for="volumeSlider">Гучність звуків</label>
-              <span class="volume-display" id="volumePercent">70%</span>
+        <section class="pane" id="ppane-stats">
+          <div class="box-title" data-i18n="stats_alltime_title">Компанія за весь час</div>
+          <div class="kpi-grid" id="statsKpis"></div>
+          <div class="box">
+            <div class="box-title"><span data-i18n="stats_daily_chart">По днях</span>
+              <span class="chart-legend"><i class="lg inc"></i><span data-i18n="chart_income">дохід</span><i class="lg exp"></i><span data-i18n="chart_expense">витрати</span></span>
             </div>
-            <div class="slider-row">
-              <span class="slider-icon">🔈</span>
-              <input type="range" id="volumeSlider" min="0" max="100" value="70" class="custom-slider">
-              <span class="slider-icon">🔊</span>
-              <button id="btnTestSound" class="btn-sm" title="Перевірити звук">🔔 Тест</button>
+            <div class="day-chart" id="statsChart"></div>
+          </div>
+          <div class="box">
+            <div class="box-title" data-i18n="stats_expenses_breakdown">Куди йдуть гроші</div>
+            <div id="statsBreakdown"></div>
+          </div>
+          <div class="box">
+            <div class="box-title" data-i18n="career_title">Кар'єра власника</div>
+            <div class="kpi-grid four" id="statsCareer"></div>
+          </div>
+        </section>
+
+        <section class="pane" id="ppane-achievements">
+          <div class="box-title"><span data-i18n="achievements_tab">Досягнення</span> <span class="mono accent" id="achievementsCounter"></span></div>
+          <div class="ach-list" id="achievementsList"></div>
+        </section>
+
+        <section class="pane" id="ppane-settings">
+          <div class="box">
+            <div class="box-title" data-i18n="pause_lang_section">Мова</div>
+            <div class="lang-row" id="langSelectorGrid">
+              <button class="lang-chip wide" data-lang="uk">🇺🇦 Українська</button>
+              <button class="lang-chip wide" data-lang="sk">🇸🇰 Slovenčina</button>
+              <button class="lang-chip wide" data-lang="en">🇬🇧 English</button>
+              <button class="lang-chip wide" data-lang="de">🇩🇪 Deutsch</button>
             </div>
           </div>
-
-          <!-- Перемикач звукових ефектів -->
-          <div class="setting-item-toggle">
-            <div>
-              <span class="setting-label">Звукові ефекти</span>
-              <span class="setting-subtext">Дзвін монет, клаксон, попередження</span>
+          <div class="box">
+            <div class="box-title" data-i18n="pause_audio_section">Звук</div>
+            <div class="setting-row">
+              <label for="volumeSlider" data-i18n="setting_volume">Гучність</label>
+              <input type="range" id="volumeSlider" min="0" max="100" value="70">
+              <span class="mono" id="volumePercent">70%</span>
+              <button class="btn btn-sm" id="btnTestSound" data-i18n="btn_test_sound">Тест</button>
             </div>
-            <label class="switch">
+            <label class="setting-row toggle">
+              <span><b data-i18n="setting_sound_effects">Звукові ефекти</b><small data-i18n="setting_sound_sub"></small></span>
               <input type="checkbox" id="toggleSoundEffects" checked>
-              <span class="slider-switch"></span>
+              <span class="switch"></span>
             </label>
           </div>
-
-          <!-- Перемикач теми -->
-          <div class="setting-item-toggle">
-            <div>
-              <span class="setting-label" id="themeSwitchLabel">Світла тема</span>
-              <span class="setting-subtext" id="themeSwitchSub">Перемкнути між темним і світлим відображенням</span>
+          <div class="box">
+            <div class="box-title" data-i18n="save_section">Збереження</div>
+            <p class="muted" id="saveInfo"></p>
+            <div class="btn-row">
+              <button class="btn" id="btnSaveNow" data-i18n="btn_save_now">Зберегти зараз</button>
+              <button class="btn" id="btnExportSave" data-i18n="btn_export_save">Експорт у файл</button>
+              <label class="btn" for="importFilePause"><span data-i18n="btn_import_save">Імпорт</span></label>
+              <input type="file" id="importFilePause" accept=".json,application/json" hidden>
             </div>
-            <label class="switch">
-              <input type="checkbox" id="toggleLightTheme">
-              <span class="slider-switch"></span>
-            </label>
           </div>
-
-          <!-- Швидкі дії -->
-          <div class="setting-item-row">
-            <button id="btnRestartTutorialFromPause" class="btn-action">
-              🎓 Пройти туторіал знову
-            </button>
-            <button id="btnOpenHelpFromPause" class="btn-action">
-              📖 Правила та довідка
-            </button>
+          <div class="box">
+            <div class="btn-row">
+              <button class="btn" id="btnRestartTutorialFromPause" data-i18n="btn_restart_tut_help">Туторіал</button>
+              <button class="btn" id="btnOpenHelpFromPause" data-i18n="btn_open_help">Довідка</button>
+              <button class="btn" id="btnToTitle" data-i18n="btn_to_title">Головне меню</button>
+            </div>
           </div>
-        </div>
-
-        <!-- Розділ: Почати гру заново -->
-        <div class="pause-section danger-section">
-          <div class="section-title">🔄 Керування компанією</div>
-          <p class="section-desc">Скинути всі контракти, флот та баланс до початкових €15,000.</p>
-          <button id="btnRestartGameFromPause" class="btn-danger-outline">
-            ⚠️ Почати гру заново
-          </button>
-        </div>
-      </div>
-
-      <div class="modal-footer pause-footer">
-        <span class="esc-hint">Підказка: натисніть <b>Esc</b> для швидкого виходу з меню</span>
+          <div class="box danger">
+            <div class="box-title" data-i18n="pause_danger_section">Керування компанією</div>
+            <p class="muted" data-i18n="pause_danger_desc"></p>
+            <button class="btn btn-danger" id="btnRestartGameFromPause" data-i18n="btn_restart_game_pause">Нова компанія</button>
+          </div>
+        </section>
       </div>
     </div>
   </div>
 
-  <!-- Модальне вікно покрокового туторіалу -->
-  <div id="tutorialModal" class="modal-backdrop tutorial-backdrop hidden">
-    <div class="modal-card tutorial-card">
-      <div class="tutorial-header">
-        <div class="tutorial-progress-bar">
-          <div class="tutorial-progress-fill" id="tutProgressFill"></div>
-        </div>
-        <div class="tutorial-top-row">
-          <span class="tutorial-step-badge" id="tutStepBadge">Крок 1 з 6</span>
-          <button class="btn-skip" id="btnSkipTutorial">Пропустити ✕</button>
-        </div>
+  <!-- ============================ Банкрутство ============================ -->
+  <div id="bankruptModal" class="modal hidden" role="dialog" aria-modal="true">
+    <div class="modal-card bankrupt-card">
+      <div class="bankrupt-icon">📉</div>
+      <h3 data-i18n="bankrupt_title">Компанія збанкрутувала</h3>
+      <p class="muted" data-i18n="bankrupt_desc"></p>
+      <div class="kpi-grid" id="bankruptStats"></div>
+      <div class="btn-row center">
+        <button class="btn btn-primary" id="btnBankruptNew" data-i18n="btn_new_company">Нова компанія</button>
       </div>
+    </div>
+  </div>
 
-      <div class="tutorial-body">
-        <div class="tutorial-icon-box" id="tutIconBox">🌐</div>
-        <h3 class="tutorial-title" id="tutTitle">Ласкаво просимо до EuroTrans!</h3>
-        <p class="tutorial-desc" id="tutDesc">Текст кроку навчання...</p>
-        
-        <div class="tutorial-tip-box" id="tutTipBox">
-          <span class="tip-icon">💡</span>
-          <span class="tip-text" id="tutTipText">Корисна порада...</span>
-        </div>
+  <!-- ============================ Туторіал ============================ -->
+  <div id="tutSpotlight" class="tut-spotlight hidden"></div>
+  <div id="tutorialModal" class="tutorial-layer hidden">
+    <div class="tutorial-card" data-arrow="none">
+      <div class="tut-progress"><div class="tut-progress-fill" id="tutProgressFill"></div></div>
+      <div class="tut-top">
+        <span class="pill" id="tutStepBadge"></span>
+        <button class="link-btn" id="btnSkipTutorial" data-i18n="btn_skip_tutorial">Пропустити</button>
       </div>
-
-      <div class="tutorial-footer">
-        <div class="tutorial-dots" id="tutDotsContainer">
-          <!-- Генерується динамічно -->
-        </div>
-        <div class="tutorial-nav-buttons">
-          <button id="btnTutPrev" class="btn-tut-nav" disabled>⬅ Назад</button>
-          <button id="btnTutNext" class="btn-tut-nav primary">Далі ➔</button>
+      <div class="tut-body">
+        <div class="tut-icon" id="tutIconBox">🌐</div>
+        <h3 id="tutTitle"></h3>
+        <p id="tutDesc"></p>
+        <div class="tut-tip"><span>💡</span><span id="tutTipText"></span></div>
+      </div>
+      <div class="tut-foot">
+        <div class="tut-dots" id="tutDotsContainer"></div>
+        <div class="btn-row">
+          <button class="btn btn-sm" id="btnTutPrev"></button>
+          <button class="btn btn-sm btn-primary" id="btnTutNext"></button>
         </div>
       </div>
     </div>
   </div>
 
-  <!-- Спливаючі сповіщення (Toasts) -->
-  <div id="toastContainer" class="toast-container"></div>
+  <div id="toastContainer" class="toasts" aria-live="polite"></div>
 
-  <script src="i18n.js"></script>
-  <script src="game.js"></script>
+  <!-- Дані -->
+  <script src="js/data/world.js"></script>
+  <script src="js/data/catalog.js"></script>
+  <script src="js/data/progression.js"></script>
+  <script src="js/data/i18n.js"></script>
+  <script src="js/data/i18n-v4.js"></script>
+  <!-- Ядро -->
+  <script src="js/core/sound.js"></script>
+  <script src="js/core/state.js"></script>
+  <script src="js/core/game.js"></script>
+  <!-- Системи гри -->
+  <script src="js/systems/routing.js"></script>
+  <script src="js/systems/economy.js"></script>
+  <script src="js/systems/contracts.js"></script>
+  <script src="js/systems/fleet.js"></script>
+  <script src="js/systems/company.js"></script>
+  <script src="js/systems/persistence.js"></script>
+  <!-- Рендер та інтерфейс -->
+  <script src="js/render/map.js"></script>
+  <script src="js/ui/i18n-ui.js"></script>
+  <script src="js/ui/panels.js"></script>
+  <script src="js/ui/setup.js"></script>
+  <script src="js/ui/pause.js"></script>
+  <script src="js/ui/tutorial.js"></script>
+  <script src="js/ui/events.js"></script>
+  <script src="js/main.js"></script>
 </body>
 </html>
